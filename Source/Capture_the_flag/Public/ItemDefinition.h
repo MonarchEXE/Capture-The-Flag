@@ -1,0 +1,30 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Engine/DataAsset.h"
+#include "../Data/ItemData.h"
+#include "ItemDefinition.generated.h"
+
+/**
+ * 
+ */
+UCLASS(BlueprintType, Blueprintable)
+class CAPTURE_THE_FLAG_API UItemDefinition : public UDataAsset
+{
+	GENERATED_BODY()
+
+	public:
+		//UItemDefinition();
+
+		UPROPERTY(EditAnywhere, Category = "Item Data")
+		FText ID;
+		UPROPERTY(EditAnywhere, Category = "Item Data")
+		EItemType ItemType;
+		UPROPERTY(EditAnywhere, Category = "Item Data")
+		FItemText ItemText;
+		UPROPERTY(EditAnywhere, Category = "Item Data")
+		TSoftObjectPtr<UStaticMesh> WorldMesh;
+	
+};
