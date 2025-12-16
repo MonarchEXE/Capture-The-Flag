@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
-#include "Kismet/GameplayStatics.h"
-#include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "EquipmentBase.h"
+#include "EquipmentDefinition.h"
+#include "InventoryComponent.h"
 
 #include "CTF_PlayerChar.generated.h"
 
@@ -26,21 +26,22 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(VisibleAnywhere, Category = Inventory)
+	TObjectPtr<UInventoryComponent> InventoryComponent;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:	
-	UPROPERTY(EditDefaultsOnly)
-	UCameraComponent* playerCam;
-	UPROPERTY(EditDefaultsonly)
-	UStaticMeshComponent* playerMesh;
-	UPROPERTY(EditDefaultsOnly)
-	UCapsuleComponent* playerHitbox;
+	UFUNCTION()
+	bool IsEquipmentAlreadyOwned(UEquipmentDefinition* EquipmentDefinition);
 
-	void MoveXAxis(float axisValue);
-	void MoveYAxis(float axisValue);
-	//void Jump();
+	UFUNCTION() 
+	void AttachTool(UEquipmentDefinition* EquipmentDefinition);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tools)
+	TObjectPtr<AEquipmentBase> EquippedItem;
+
+private:	
 	
 };

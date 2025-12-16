@@ -11,7 +11,8 @@ class UItemDefinition;
 UENUM()
 enum class EItemType : uint8 {
 	Tool UMETA(DisplayName = "Tool"),
-	Consumable UMETA(DisplayName = "Consumable")
+	Consumable UMETA(DisplayName = "Consumable"),
+	Weapon UMETA(DisplayName = "Weapon")
 };
 
 USTRUCT()

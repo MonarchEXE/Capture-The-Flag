@@ -26,5 +26,7 @@ class CAPTURE_THE_FLAG_API UItemDefinition : public UDataAsset
 		FItemText ItemText;
 		UPROPERTY(EditAnywhere, Category = "Item Data")
 		TSoftObjectPtr<UStaticMesh> WorldMesh;
-	
+
+		virtual UItemDefinition* CreateItemCopy() const;
+
 };

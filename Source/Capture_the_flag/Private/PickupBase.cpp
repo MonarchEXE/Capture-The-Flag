@@ -41,13 +41,6 @@ void APickupBase::InitializePickup() {
 	if (PickupDataTable && !PickupItemID.IsNone()) {
 		const FItemData* ItemDataRow = PickupDataTable->FindRow<FItemData>(PickupItemID, PickupItemID.ToString());
 
-		ReferenceItem = NewObject<UItemDefinition>(this, UItemDefinition::StaticClass());
-
-		ReferenceItem->ID = ItemDataRow->ID;
-		ReferenceItem->ItemType = ItemDataRow->ItemType;
-		ReferenceItem->ItemText = ItemDataRow->ItemText;
-		ReferenceItem->WorldMesh = ItemDataRow->ItemBase->WorldMesh;
-
 		if (ItemDataRow == nullptr) {
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "GEngine: Item data was not found.");
 			UE_LOG(LogTemp, Error, TEXT("ItemBase is null in DataTable"));
@@ -55,6 +48,9 @@ void APickupBase::InitializePickup() {
 		}
 
 		UItemDefinition* TempDefinition = ItemDataRow->ItemBase.Get();
+
+		ReferenceItem = TempDefinition->CreateItemCopy();
+
 		if (TempDefinition->WorldMesh.IsValid()) {
 			PickupMeshComponent->SetStaticMesh(TempDefinition->WorldMesh.Get());
 		}
