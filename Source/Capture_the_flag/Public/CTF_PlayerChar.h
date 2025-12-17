@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
+
 #include "EquipmentBase.h"
 #include "EquipmentDefinition.h"
 #include "InventoryComponent.h"
@@ -26,8 +29,13 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	void GiveItem(UItemDefinition* ItemDefinition);
+	
 	UPROPERTY(VisibleAnywhere, Category = Inventory)
 	TObjectPtr<UInventoryComponent> InventoryComponent;
+
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,6 +49,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tools)
 	TObjectPtr<AEquipmentBase> EquippedItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction>UseAction;
 
 private:	
 	
