@@ -38,14 +38,17 @@ void APickupBase::Tick(float DeltaTime)
 }
 
 void APickupBase::InitializePickup() {
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("GEngine: %s - Spawning Item."), *GetActorLabel()));
 	if (PickupDataTable && !PickupItemID.IsNone()) {
 		const FItemData* ItemDataRow = PickupDataTable->FindRow<FItemData>(PickupItemID, PickupItemID.ToString());
 
 		if (ItemDataRow == nullptr) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "GEngine: Item data was not found.");
-			UE_LOG(LogTemp, Error, TEXT("ItemBase is null in DataTable"));
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("GEngine: %s - Item ID was not found."), *GetActorLabel()));
+			UE_LOG(LogTemp, Error, TEXT("APickupBase::InitializePickup(): Item lookup in Data table returns nullptr."));
 			return;
 		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("GEngine: %s - Item ID found."), *GetActorLabel()));
 
 		UItemDefinition* TempDefinition = ItemDataRow->ItemBase.Get();
 
@@ -63,8 +66,18 @@ void APickupBase::InitializePickup() {
 		CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &APickupBase::OnSphereBeginOverlap);
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "GEngine: Item Spawned.");
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("GEngine: %s - Item spawned."), *GetActorLabel()));
 	}
+	// debug msgs for missing properties for Item Data
+	else {
+		if (PickupItemID.IsNone()) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("GEngine: %s - \"Pickup Item ID\" is empty."), *GetActorLabel()));
+		}
+		if (!(PickupDataTable)) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("GEngine: %s - \"Pickup Data table\" is empty."), *GetActorLabel()));
+		}
+	}
+	
 }
 
 void APickupBase::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
