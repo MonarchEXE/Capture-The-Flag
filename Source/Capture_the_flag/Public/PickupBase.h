@@ -5,9 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
-//#include "BP_ThirdPersonCharacter.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/Character.h"
+#include "CTF_PlayerChar.h"
 
 #include "PickupBase.generated.h"
 
