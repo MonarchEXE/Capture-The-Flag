@@ -73,12 +73,29 @@ void ACTF_PlayerChar::AttachTool(UEquipmentDefinition* EquipmentDefinition) {
 
 }
 
+void ACTF_PlayerChar::AttachFlag(UFlagDefinition* FlagDefinition) {
+	AFlagBase* FlagAsset = Cast<AFlagBase>(FlagDefinition->FlagAsset);
+
+	if (FlagAsset->TeamAssignment != TeamAssignment) {
+		AFlagBase* Flag = GetWorld()->SpawnActor<AFlagBase>(FlagDefinition->FlagAsset, this->GetActorTransform());
+
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+
+		Flag->AttachToActor(this, AttachmentRules);
+
+		//CapturedFlagComponent->EquipmentInventory.Add(FlagDefinition);
+
+		CapturedFlag = Flag;
+	}
+
+}
+
 void ACTF_PlayerChar::GiveItem(UItemDefinition* ItemDefinition) {
 	switch (ItemDefinition->ItemType) {
 	case EItemType::Tool: {
 		UEquipmentDefinition* ToolDefinition = Cast<UEquipmentDefinition>(ItemDefinition);
 		if (ToolDefinition != nullptr) {
-			//AttachTool(ToolDefinition);
+			AttachTool(ToolDefinition);
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("GEngine: %s - Successfully cast \"%s\" instance to tool."), *GetActorLabel(), *ItemDefinition->ID.ToString()));
 		}
 		else {
@@ -91,6 +108,15 @@ void ACTF_PlayerChar::GiveItem(UItemDefinition* ItemDefinition) {
 		break;
 	}
 	case EItemType::Flag: {
+		UFlagDefinition* FlagDefinition = Cast<UFlagDefinition>(ItemDefinition);
+		AFlagBase* FlagAsset = Cast<AFlagBase>(FlagDefinition->FlagAsset);
+		if (FlagAsset != nullptr && FlagAsset->TeamAssignment != TeamAssignment) {
+			//AttachFlag(FlagDefinition);
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("GEngine: %s - Successfully cast \"%s\" instance to flag."), *GetActorLabel(), *ItemDefinition->ID.ToString()));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("GEngine: %s - Failed to cast \"%s\" instance to flag."), *GetActorLabel(), *ItemDefinition->ID.ToString()));
+		}
 		break;
 	}
 	default: {

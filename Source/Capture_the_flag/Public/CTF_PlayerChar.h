@@ -10,6 +10,8 @@
 
 #include "EquipmentBase.h"
 #include "EquipmentDefinition.h"
+#include "FlagBase.h"
+#include "FlagDefinition.h"
 #include "InventoryComponent.h"
 
 #include "CTF_PlayerChar.generated.h"
@@ -35,6 +37,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Inventory)
 	TObjectPtr<UInventoryComponent> InventoryComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = Inventory)
+	TObjectPtr<UInventoryComponent> CapturedFlagComponent;
 
 
 protected:
@@ -47,11 +51,22 @@ protected:
 	UFUNCTION() 
 	void AttachTool(UEquipmentDefinition* EquipmentDefinition);
 
+	UFUNCTION()
+	void AttachFlag(UFlagDefinition* FlagDefinition);
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tools)
 	TObjectPtr<AEquipmentBase> EquippedItem;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tools)
+	TObjectPtr<AFlagBase> CapturedFlag;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction>UseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Team)
+	uint8 TeamAssignment;
+
+	
 
 private:	
 	

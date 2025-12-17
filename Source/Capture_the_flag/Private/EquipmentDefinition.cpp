@@ -11,6 +11,7 @@ UEquipmentDefinition* UEquipmentDefinition::CreateItemCopy() const {
 	EquipmentCopy->ItemText = this->ItemText;
 	EquipmentCopy->ItemType = this->ItemType;
 	EquipmentCopy->WorldMesh = this->WorldMesh;
+	EquipmentCopy->ToolAsset = this->ToolAsset;
 
 	return EquipmentCopy;
 }

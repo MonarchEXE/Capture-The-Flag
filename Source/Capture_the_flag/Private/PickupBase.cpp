@@ -10,6 +10,7 @@ APickupBase::APickupBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// UProperty definitions pre-runtime
 	PickupMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
 	check(PickupMeshComponent != nullptr);
 
@@ -38,7 +39,9 @@ void APickupBase::Tick(float DeltaTime)
 }
 
 void APickupBase::InitializePickup() {
+
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("GEngine: %s - Spawning Item."), *GetActorLabel()));
+	
 	if (PickupDataTable && !PickupItemID.IsNone()) {
 		const FItemData* ItemDataRow = PickupDataTable->FindRow<FItemData>(PickupItemID, PickupItemID.ToString());
 
@@ -99,6 +102,7 @@ void APickupBase::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 
 	// sets timer to delay when item respawns
 	if (bShouldRespawn) {
+		// InitializePickup fine to call again - just makes Static Mesh visible and enables Collision detection.
 		GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &APickupBase::InitializePickup, RespawnTime, false, RespawnTime);
 	}
 }
