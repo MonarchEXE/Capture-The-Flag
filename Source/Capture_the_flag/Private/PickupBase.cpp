@@ -85,9 +85,11 @@ void APickupBase::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, "GEngine: Attempting Item Pickup Collision");
 	
 	// BP_ThirdPersonCharacter is a blueprint class - cannot be casted; casting using base class
-	ACharacter* Character = Cast<ACharacter>(OtherActor);
+	ACTF_PlayerChar* Character = Cast<ACTF_PlayerChar>(OtherActor);
 
 	if (Character != nullptr) {
+		Character->GiveItem(ReferenceItem);
+		
 		CollisionSphere->OnComponentBeginOverlap.RemoveAll(this);
 
 		PickupMeshComponent->SetVisibility(false);
@@ -95,7 +97,8 @@ void APickupBase::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		CollisionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
+	// sets timer to delay when item respawns
 	if (bShouldRespawn) {
-		GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &APickupBase::InitializePickup, RespawnTime, false, 0);
+		GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &APickupBase::InitializePickup, RespawnTime, false, RespawnTime);
 	}
 }
