@@ -47,16 +47,54 @@ bool ACTF_PlayerChar::IsEquipmentAlreadyOwned(UEquipmentDefinition* EquipmentDef
 
 void ACTF_PlayerChar::AttachTool(UEquipmentDefinition* EquipmentDefinition) {
 	if (!IsEquipmentAlreadyOwned(EquipmentDefinition)) {
-		AEquipmentBase* ItemToEquip = GetWorld()->SpawnActor<AEquipmentBase>(EquipmentDefinition->ToolAsset, this->GetActorTransform());
+		AEquipmentBase* ToolToEquip = GetWorld()->SpawnActor<AEquipmentBase>(EquipmentDefinition->ToolAsset, this->GetActorTransform());
 		
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 
-		ItemToEquip->AttachToActor(this, AttachmentRules);
+		ToolToEquip->AttachToActor(this, AttachmentRules);
 
-		ItemToEquip->OwningCharacter = this;
+		ToolToEquip->OwningCharacter = this;
 
 		InventoryComponent->EquipmentInventory.Add(EquipmentDefinition);
 		
-		EquippedItem = ItemToEquip;
+		EquippedItem = ToolToEquip;
+		
+		// Get the player controller for this character
+		if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+			{
+				Subsystem->AddMappingContext(ToolToEquip->MappingContext, 1);
+			}
+		}
+
+		ToolToEquip->BindInputAction(UseAction);
+	}
+
+}
+
+void ACTF_PlayerChar::GiveItem(UItemDefinition* ItemDefinition) {
+	switch (ItemDefinition->ItemType) {
+	case EItemType::Tool: {
+		UEquipmentDefinition* ToolDefinition = Cast<UEquipmentDefinition>(ItemDefinition);
+		if (ToolDefinition != nullptr) {
+			//AttachTool(ToolDefinition);
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("GEngine: %s - Successfully cast \"%s\" instance to tool."), *GetActorLabel(), *ItemDefinition->ID.ToString()));
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("GEngine: %s - Failed to cast \"%s\" instance to tool."), *GetActorLabel(), *ItemDefinition->ID.ToString()));
+		}
+		
+		break;
+	}
+	case EItemType::Consumable: {
+		break;
+	}
+	case EItemType::Flag: {
+		break;
+	}
+	default: {
+		break;
+	}
 	}
 }
